@@ -2,6 +2,7 @@
 	import '$lib/styles/fonts.css';
 	import '$lib/styles/tokens.css';
 	import favicon from '$lib/assets/favicon.svg';
+	import { Canvas } from '$lib/canvas';
 
 	let { children } = $props();
 </script>
@@ -10,7 +11,7 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<canvas id="scope"></canvas>
+<Canvas />
 <div class="grid-bg"></div>
 <div class="crt"></div>
 
@@ -22,6 +23,10 @@
 		inset: 0;
 		z-index: 1;
 		pointer-events: none;
+		/**
+		 * Create our graticule grid lines. Transparent color stop line keeps the main grid line from
+		 * from stretching. Background size is defining our tile which gets repeated.
+		 */
 		background-image:
 			linear-gradient(var(--grid) 1px, transparent 1px),
 			linear-gradient(90deg, var(--grid) 1px, transparent 1px);
@@ -33,6 +38,10 @@
 		inset: 0;
 		z-index: 2;
 		pointer-events: none;
+		/**
+		 * We're doing something similar to grid-bg but using repeating linear gradient instead. This
+	     * will create a dark semi-transparent line for 1px, then transparent for 2px, repeaeting...
+		 */
 		background: repeating-linear-gradient(
 			0deg,
 			rgba(0, 0, 0, 0.18) 0px,
@@ -40,9 +49,17 @@
 			transparent 1px,
 			transparent 3px
 		);
+		/**
+		 * Never used this prop before. Multiply will blend the scanline effect with the background
+		 * behind it. The idea is we're trying to make it NOT look like the scanlines are merely sitting
+		 * on top of the background.
+		 */
 		mix-blend-mode: multiply;
 	}
 
+	/**
+	 * Simple vignette effect
+	 */
 	.crt::after {
 		content: '';
 		position: absolute;
