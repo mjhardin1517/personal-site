@@ -1,0 +1,38 @@
+:root {
+	display: block;
+
+	/* ------------------------------------------------------------------------------------------ */
+	/* § P1 (green) phosphor glow emulation
+    /* ------------------------------------------------------------------------------------------ */
+
+	/**
+     * Phosphor screens produced lines with glowing effects and varying brightness. To that end, we
+     * use a ramp to create the effect.
+     */
+	--phosphor: #5dff8f; /* Active text/lines */
+	--phosphor-dim: #2e8c4f; /* Secondary text, faint glowing borders */
+	--phosphor-deep: #0d3a1e; /* Least visible, less noticible features like dividers */
+
+	/**
+      * Tube monitors are not pure black. Instead we will use near-black Golgari.
+      */
+	--bg: #030704;
+
+	/**
+	 * We will use minimal accents, as I want a monochrome look.
+	 */
+	--amber: #ffb347;
+	--ion: #4fd0ff;
+
+	/**
+	 * Graticule grid.
+	 */
+	--grid: rgba(93, 255, 143, 0.045);
+
+	/* ------------------------------------------------------------------------------------------ */
+	/* § Fonts
+    /* ------------------------------------------------------------------------------------------ */
+
+	--mono: 'DM Mono', ui-monospace, monospace; /* Font family */
+	--glow-sm: 0 0 4px var(--phosphor), 0 0 11px var(--phosphor-dim); /* Glowing text effect */
+}

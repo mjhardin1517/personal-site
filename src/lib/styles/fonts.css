@@ -1,0 +1,13 @@
+@font-face {
+	font-family: 'DM Mono';
+	font-weight: 300;
+	font-display: swap;
+	src: url('/fonts/dm-mono-300.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'DM Mono';
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/dm-mono-400.woff2') format('woff2');
+}
