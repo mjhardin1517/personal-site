@@ -1,0 +1,14 @@
+# https://lefthook.dev/configuration/
+pre-commit:
+  # Jobs run sequentially in listed order: format first, then lint the result.
+  jobs:
+    # Format staged files, then automatically re-stage anything Prettier rewrote.
+    - name: prettier
+      glob: '*.{js,ts,svelte,css,html,json,md,yaml,yml}'
+      run: bunx prettier --write {staged_files}
+      stage_fixed: true
+
+    # Lint the (now-formatted) staged files. A non-zero exit aborts the commit.
+    - name: eslint
+      glob: '*.{js,ts,svelte}'
+      run: bunx eslint --no-warn-ignored {staged_files}
