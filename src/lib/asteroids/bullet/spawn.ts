@@ -28,6 +28,7 @@ export function spawn(world: World, from: components.Transform, inherit: Vec2): 
 
 	const bullet = entity.create(world);
 	const graphic = createGraphic();
+	const radius = polygon.calcLargestRadius(graphic, { x: 0, y: 0 });
 
 	component.put<components.Transform>(world, bullet, components.TRANSFORM, {
 		x,
@@ -45,13 +46,18 @@ export function spawn(world: World, from: components.Transform, inherit: Vec2): 
 		polygon: graphic,
 	});
 	component.put<components.Wrap>(world, bullet, components.WRAP, { isWrapping: false, ghosts: [] });
-	component.put<components.Circle>(world, bullet, components.CIRCLE, {
-		radius: polygon.calcLargestRadius(graphic, { x: 0, y: 0 }),
-	});
+	component.put<components.Circle>(world, bullet, components.CIRCLE, { radius });
 	component.put<components.PreviousTransform>(world, bullet, components.PREVIOUS_TRANSFORM, {
 		x,
 		y,
 		angle: from.angle,
 	});
 	component.put<components.Lifetime>(world, bullet, components.LIFETIME, { remaining: LIFESPAN });
+
+	// A bullet is an aggressor only - its whole tiny body is the strike circle, aimed at rocks. It has no
+	// Hurtbox; once spent it is stamped Collided on impact and the reaper (step 7) removes it.
+	component.put<components.Hitbox>(world, bullet, components.HITBOX, {
+		radius,
+		targets: ['asteroid'],
+	});
 }

@@ -43,6 +43,37 @@ export type PlayerControlled = Tag;
 
 export const PLAYER_CONTROLLED = 'player_controlled';
 
+/**
+ * For determining what can actually be hit. These are collision categories, not identities.
+ */
+export type Layer = 'ship' | 'asteroid';
+
+/**
+ * A circle representing the bounds of where an entity can be hit by an aggressor entity, as well as
+ * what layer it resides on.
+ */
+export type Hurtbox = { radius: number; layer: Layer };
+
+export const HURTBOX = 'hurtbox';
+
+/**
+ * A circle representing the bounds of an entity capable of targeting and hitting another, as well as
+ * what layers it can target.
+ */
+export type Hitbox = { radius: number; targets: Layer[] };
+
+export const HITBOX = 'hitbox';
+
+/**
+ * Neutral "a collision happened this step" event, stamped on both participants by the collision system.
+ */
+export type Collided = Tag;
+
+export const COLLIDED = 'collided';
+
+// TODO(collision step 5): add an asteroid size/tier component (e.g. AsteroidSize = { tier: 'large' |
+// 'medium' | 'small' }) so each rock carries its tier — splitting (step 8) reads it to pick the child tier.
+
 /** Seconds an entity has left before it self-destructs (e.g. a fired bullet with no target). */
 export type Lifetime = { remaining: number };
 

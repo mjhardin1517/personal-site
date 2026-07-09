@@ -34,6 +34,15 @@ export function* query(world: World, keys: string[]) {
 	}
 }
 
+/**
+ * Like `query`, but materializes the whole match into an array up front. This is essentially a less
+ * good way of achieving the same result that a deferred-removal command buffer would give you. However,
+ * it's more simple. Deferred-removal can be revisited if the pain warrants it.
+ */
+export function queryAll(world: World, keys: string[]): Entity[] {
+	return [...query(world, keys)];
+}
+
 export function register(world: World, name: string) {
 	world.componentStore[name] = sparseSet.create<unknown>();
 }
