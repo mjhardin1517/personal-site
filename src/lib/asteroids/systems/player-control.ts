@@ -3,11 +3,18 @@ import * as resource from '$lib/ecs/resource';
 import * as component from '$lib/ecs/component';
 import * as resources from '../resources';
 import * as components from '../components';
+import * as bullet from '../bullet';
 
-/** Constant turn rate while a steer key is held (rad/s). No angular momentum — release = stop. */
-const TURN_SPEED = 3.5;
-/** Thrust acceleration along the nose while thrust is held (px/s²). Momentum carries; no drag yet. */
-const THRUST_ACCEL = 260;
+/**
+ * Constant turn rate while a steer key is held (rad/s). No angular momentum (release = stop).
+ * Approximate the Deluxe's ±3 of 256 headings per frame at 60fps -> ~1.4s for a full rotation.
+ */
+const TURN_SPEED = 4.4;
+/**
+ * Thrust acceleration along the nose while thrust is held (px/s^2). Approximate Deluxe's ~1s to top
+ * speed.
+ */
+const THRUST_ACCEL = 600;
 
 /**
  * Translates player input into ship intent. Steering sets a constant angular velocity and thrust
@@ -47,8 +54,10 @@ export function playerControl(world: World, dt: number) {
 		for (const action of input.queue) {
 			switch (action) {
 				case 'fire':
-					// TODO: spawn a projectile from the ship's nose. Routed through the queue (rather
-					// than a held flag) so one tap = one shot regardless of how many fixed steps ran.
+					// One shot per tap (the queue already de-duped held-key repeat). The bullet
+					// inherits the ship's heading and velocity; with no collision yet, its Lifetime
+					// is what expires it.
+					bullet.spawn(world, transform, velocity);
 					break;
 			}
 		}

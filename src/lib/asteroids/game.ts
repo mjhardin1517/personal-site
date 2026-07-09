@@ -32,6 +32,9 @@ export function create(conf: Conf) {
 	component.register(newWorld, components.CIRCLE);
 	component.register(newWorld, components.PLAYER_CONTROLLED);
 	component.register(newWorld, components.PREVIOUS_TRANSFORM);
+	component.register(newWorld, components.LIFETIME);
+	component.register(newWorld, components.MAX_SPEED);
+	component.register(newWorld, components.DRAG);
 
 	/* -------------------------------------------------------------------------------------------- */
 	/* § Add resources
@@ -114,15 +117,24 @@ export function create(conf: Conf) {
 		y: conf.worldSize.y / 2,
 		angle: 0,
 	});
+	// Asteroids Deluxe handling: top speed is a hard cap (~17 ship-lengths/s), and light drag bleeds
+	// off drift. Ship-only — bullets and asteroids stay frictionless.
+	component.put<components.MaxSpeed>(newWorld, shipEntity, components.MAX_SPEED, { value: 600 });
+	component.put<components.Drag>(newWorld, shipEntity, components.DRAG, { coefficient: 0.5 });
 
 	/* -------------------------------------------------------------------------------------------- */
 	/* § Add fixed update systems
   /* -------------------------------------------------------------------------------------------- */
 
 	system.put(newWorld, systems.playerControl);
+	// Drag then the speed cap shape the ship's velocity before transform integrates it.
+	system.put(newWorld, systems.drag);
+	system.put(newWorld, systems.maxSpeed);
 	system.put(newWorld, systems.transform);
 	// Wrap is needs transform to happen to evaluate
 	system.put(newWorld, systems.wrap);
+	// Expire and destroy spent bullets.
+	system.put(newWorld, systems.lifetime);
 
 	/* -------------------------------------------------------------------------------------------- */
 	/* § Add render systems

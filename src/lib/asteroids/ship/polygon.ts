@@ -26,14 +26,21 @@ import * as vec2 from '$lib/math/vec2';
 // 	{ x: -0.5714, y: 0.7143 }, // left rear fin tip
 // ];
 
+export const SHIP_NOSE = { x: 89, y: 83 };
+
+// Facing right - forms the cone shape
+export const SHIP_TAIL_TOP = { x: 36, y: 70 };
+export const SHIP_TAIL_CENTER = { x: 38, y: 83 };
+export const SHIP_TAIL_BOTTOM = { x: 36, y: 96 };
+
 /** Deluxe-style ship painstakingly pulled from preview */
 const SHIP_HULL: Polygon = [
 	// Mainbody
-	{ x: 38, y: 83 },
-	{ x: 36, y: 96 },
-	{ x: 89, y: 83 },
-	{ x: 36, y: 70 },
-	{ x: 38, y: 83 },
+	SHIP_TAIL_CENTER,
+	SHIP_TAIL_BOTTOM,
+	SHIP_NOSE,
+	SHIP_TAIL_TOP,
+	SHIP_TAIL_CENTER,
 	// Wings
 	{ x: 41, y: 101 },
 	{ x: 50, y: 110 },

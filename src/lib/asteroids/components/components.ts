@@ -42,3 +42,18 @@ export const CIRCLE = 'circle';
 export type PlayerControlled = Tag;
 
 export const PLAYER_CONTROLLED = 'player_controlled';
+
+/** Seconds an entity has left before it self-destructs (e.g. a fired bullet with no target). */
+export type Lifetime = { remaining: number };
+
+export const LIFETIME = 'lifetime';
+
+/** Hard cap on an entity's speed - the scalar magnitude of its velocity - in px/s. */
+export type MaxSpeed = { value: number };
+
+export const MAX_SPEED = 'max_speed';
+
+/** Viscous drag coefficient (per second): velocity decays by `exp(-coefficient · dt)` each step. */
+export type Drag = { coefficient: number };
+
+export const DRAG = 'drag';

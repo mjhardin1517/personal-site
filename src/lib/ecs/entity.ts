@@ -14,7 +14,15 @@ export function create(world: World): Entity {
 	return id;
 }
 
+/**
+ * Removes an entity entirely by stripping it from every component store, drops it from the live-entity
+ * set, and frees its id for reuse. Clearing the stores first makes id recycling safe; otherwise a reused
+ * id would inherit the previous entity's components.
+ */
 export function remove(world: World, entity: Entity) {
+	for (const store of Object.values(world.componentStore)) {
+		sparseSet.remove(store, entity);
+	}
 	sparseSet.remove(world.activeEntities, entity);
 	world.freeIds.push(entity);
 }
