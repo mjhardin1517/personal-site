@@ -43,6 +43,10 @@ export type PlayerControlled = Tag;
 
 export const PLAYER_CONTROLLED = 'player_controlled';
 
+export type Bullet = Tag;
+
+export const BULLET = 'bullet';
+
 /**
  * For determining what can actually be hit. These are collision categories, not identities.
  */

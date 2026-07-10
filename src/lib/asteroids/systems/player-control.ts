@@ -15,6 +15,8 @@ const TURN_SPEED = 4.4;
  * speed.
  */
 const THRUST_ACCEL = 600;
+/** Classic Asteroids caps shots on screen. */
+const MAX_BULLETS = 4;
 
 /**
  * Translates player input into ship intent. Steering sets a constant angular velocity and thrust
@@ -54,6 +56,7 @@ export function playerControl(world: World, dt: number) {
 		for (const action of input.queue) {
 			switch (action) {
 				case 'fire':
+					if (component.count(world, components.BULLET) >= MAX_BULLETS) break;
 					// One shot per tap (the queue already de-duped held-key repeat). The bullet
 					// inherits the ship's heading and velocity; with no collision yet, its Lifetime
 					// is what expires it.

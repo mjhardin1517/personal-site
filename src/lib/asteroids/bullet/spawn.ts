@@ -30,6 +30,7 @@ export function spawn(world: World, from: components.Transform, inherit: Vec2): 
 	const graphic = createGraphic();
 	const radius = polygon.calcLargestRadius(graphic, { x: 0, y: 0 });
 
+	component.put<components.Bullet>(world, bullet, components.BULLET, {});
 	component.put<components.Transform>(world, bullet, components.TRANSFORM, {
 		x,
 		y,

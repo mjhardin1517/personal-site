@@ -43,6 +43,11 @@ export function queryAll(world: World, keys: string[]): Entity[] {
 	return [...query(world, keys)];
 }
 
+/** How many entities currently have `name` - the store's live size, O(1) and no allocation. */
+export function count(world: World, name: string): number {
+	return world.componentStore[name].dense.length;
+}
+
 export function register(world: World, name: string) {
 	world.componentStore[name] = sparseSet.create<unknown>();
 }

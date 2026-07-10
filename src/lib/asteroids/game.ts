@@ -39,6 +39,7 @@ export function create(conf: Conf) {
 	component.register(newWorld, components.HURTBOX);
 	component.register(newWorld, components.COLLIDED);
 	component.register(newWorld, components.ASTEROID_SIZE);
+	component.register(newWorld, components.BULLET);
 
 	/* -------------------------------------------------------------------------------------------- */
 	/* § Add resources
