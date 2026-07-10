@@ -1,8 +1,10 @@
 import type { World, Entity } from '$lib/ecs';
 import * as component from '$lib/ecs/component';
+import * as resource from '$lib/ecs/resource';
 import * as circle from '$lib/math/circle';
 import * as intersect from '$lib/math/intersect';
 import * as components from '../components';
+import * as resources from '../resources';
 
 /**
  * Detects hit/hurt overlaps and stamps both parties with Collided. A Hitbox strikes a Hurtbox only
@@ -13,6 +15,9 @@ import * as components from '../components';
  * scale (a handful of rocks, a few shots) is trivially cheap. So no spatial broad-phase needed.
  */
 export function collision(world: World) {
+	// The world wraps, so overlaps are tested by shortest distance around the edges (see below).
+	const worldSize = resource.get<resources.WorldSize>(world, resources.WORLD_SIZE);
+
 	// Materialize hurtboxes once; we scan them for every hitbox.
 	const victims = component.queryAll(world, [components.HURTBOX, components.TRANSFORM]);
 
@@ -46,8 +51,8 @@ export function collision(world: World) {
 			);
 			const vulnerable = circle.at(victimTransform, hurtbox.radius);
 
-			// Check if victim and aggressor overlap
-			if (intersect.checkCircleOverlapsCircle(strike, vulnerable)) {
+			// Overlap by shortest distance around the wrap, so hits register across the screen edges too.
+			if (intersect.checkCircleOverlapsCircleWrapped(strike, vulnerable, worldSize)) {
 				hits.push(aggressor, victim);
 			}
 		}

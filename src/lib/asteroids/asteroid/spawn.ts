@@ -6,22 +6,30 @@ import * as polygon from '$lib/math/polygon';
 import * as components from '../components';
 import { createGraphic } from './polygon';
 
-// TODO(collision step 5): drive this from a size tier (large/medium/small) — each tier picks its own
-// radius/vertex range here and its own speed at the call site — and store the tier on the entity. That
-// tier component doubles as the asteroid's identity for its reaction system (step 8).
+/** Tier presets. Null child indicates it will vanish next */
+export const TIERS: Record<
+	components.Tier,
+	{ radius: { min: number; max: number }; speed: number; child: components.Tier | null }
+> = {
+	large: { radius: { min: 50, max: 60 }, speed: 45, child: 'medium' },
+	medium: { radius: { min: 28, max: 34 }, speed: 75, child: 'small' },
+	small: { radius: { min: 14, max: 18 }, speed: 155, child: null },
+};
+
+/** Outline shape knobs shared by every tier; each tier supplies its own radius range (see TIERS). */
 const GRAPHIC_CONF = {
 	jaggedness: 0.4,
 	symmetry: 0.4,
-	radius: { min: 50, max: 60 },
 	vertices: { min: 10, max: 12 },
 };
 
 /** Bullets hit the rock's full circle - destroying a rock should feel generous. */
-const HURTBOX_SCALE = 1;
+const HURTBOX_SCALE = 0.95;
 /** The rock's ramming circle is pulled inside its spikes, so a graze doesn't kill the player. */
-const HITBOX_SCALE = 0.6;
+const HITBOX_SCALE = 0.75;
 
 export type SpawnConf = {
+	tier: components.Tier;
 	position: Vec2;
 	velocity: Vec2;
 	angularVelocity: number;
@@ -34,7 +42,7 @@ export type SpawnConf = {
  */
 export function spawn(world: World, conf: SpawnConf): void {
 	const rock = entity.create(world);
-	const graphic = createGraphic(GRAPHIC_CONF);
+	const graphic = createGraphic({ ...GRAPHIC_CONF, radius: TIERS[conf.tier].radius });
 	const radius = polygon.calcLargestRadius(graphic, { x: 0, y: 0 });
 
 	component.put<components.Transform>(world, rock, components.TRANSFORM, {
@@ -59,9 +67,6 @@ export function spawn(world: World, conf: SpawnConf): void {
 		y: conf.position.y,
 		angle: 0,
 	});
-
-	// A rock both takes hits (big Hurtbox - generous target for shots) and deals them to the ship (small
-	// Hitbox - fair on contact). Both derive from the visual radius above.
 	component.put<components.Hurtbox>(world, rock, components.HURTBOX, {
 		radius: radius * HURTBOX_SCALE,
 		layer: 'asteroid',
@@ -69,5 +74,8 @@ export function spawn(world: World, conf: SpawnConf): void {
 	component.put<components.Hitbox>(world, rock, components.HITBOX, {
 		radius: radius * HITBOX_SCALE,
 		targets: ['ship'],
+	});
+	component.put<components.AsteroidSize>(world, rock, components.ASTEROID_SIZE, {
+		tier: conf.tier,
 	});
 }

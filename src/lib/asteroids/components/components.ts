@@ -71,8 +71,14 @@ export type Collided = Tag;
 
 export const COLLIDED = 'collided';
 
-// TODO(collision step 5): add an asteroid size/tier component (e.g. AsteroidSize = { tier: 'large' |
-// 'medium' | 'small' }) so each rock carries its tier — splitting (step 8) reads it to pick the child tier.
+/**
+ * How big a rock is and, since only asteroids carry it, doubles as their identity.
+ */
+export type Tier = 'large' | 'medium' | 'small';
+
+export type AsteroidSize = { tier: Tier };
+
+export const ASTEROID_SIZE = 'asteroid_size';
 
 /** Seconds an entity has left before it self-destructs (e.g. a fired bullet with no target). */
 export type Lifetime = { remaining: number };

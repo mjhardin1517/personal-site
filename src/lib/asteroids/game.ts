@@ -38,7 +38,7 @@ export function create(conf: Conf) {
 	component.register(newWorld, components.HITBOX);
 	component.register(newWorld, components.HURTBOX);
 	component.register(newWorld, components.COLLIDED);
-	// TODO(collision step 5): register the asteroid size/tier component.
+	component.register(newWorld, components.ASTEROID_SIZE);
 
 	/* -------------------------------------------------------------------------------------------- */
 	/* § Add resources
@@ -55,6 +55,7 @@ export function create(conf: Conf) {
 
 	// A single drifting rock for now — wave/level spawning comes later.
 	asteroid.spawn(newWorld, {
+		tier: 'large',
 		position: { x: -40, y: -40 },
 		velocity: { x: 55, y: 20 },
 		angularVelocity: 0.5,
@@ -118,9 +119,10 @@ export function create(conf: Conf) {
 	system.put(newWorld, systems.lifetime);
 	// Detect Hitbox×Hurtbox overlaps by mask and stamp both parties with Collided (positions are final now).
 	system.put(newWorld, systems.collision);
-	// TODO(collision steps 8-9): register the reaction systems that read Collided for side effects here,
-	//   BETWEEN collision and the reaper — step 8 asteroid-split, step 9 ship-death — so they run before
-	//   teardown. (Step 10 makes the collision test wrap-aware.)
+	// Reaction systems read Collided for side effects, BETWEEN collision and the reaper (so they run before
+	// teardown). A shattered rock spawns the next tier down.
+	system.put(newWorld, systems.asteroidSplit);
+	// TODO(collision step 9): register the ship-death reaction here too, before the reaper.
 	// The reaper runs LAST: it removes every entity stamped Collided this step.
 	system.put(newWorld, systems.reaper);
 

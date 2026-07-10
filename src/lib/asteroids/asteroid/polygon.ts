@@ -20,8 +20,6 @@ function computeAngle(i: number, numVertices: number, symmetry: number): number 
 	const evenlySpacedAngle = (i / numVertices) * fullCircle;
 	const randomOffset = (Math.random() - 0.5) * symmetry; // Symmetry of 0.4 would yield -0.2 to 0.2
 
-	console.log(evenlySpacedAngle, randomOffset, evenlySpacedAngle * randomOffset);
-
 	// Apply the offset gives us an angle adjusted by random number from -offset to offset
 	return evenlySpacedAngle + randomOffset;
 }
